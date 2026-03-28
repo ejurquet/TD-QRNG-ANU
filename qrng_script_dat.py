@@ -16,13 +16,16 @@ import json
 import threading
 import time
 import os
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # ---- Configuration ----
 ENDPOINT    = "https://api.quantumnumbers.anu.edu.au"
-API_KEY     = os.environ.get('ANU_API_KEY', '')
-INTERVAL    = 0.5        # seconds between each request
-BATCH_SIZE  = 10         # values fetched per request
-MAX_HISTORY = 100        # number of values kept in memory
+API_KEY     = parent().par.Apikey
+MAX_HISTORY = 100 # number of values kept in memory
+INTERVAL    = parent().par.Interval
+BATCH_SIZE  = parent().par.Batchsize
+
 
 # ---- Internal state ----
 _hex_history = []
@@ -60,7 +63,7 @@ def _poll_loop():
                     if len(_hex_history) > MAX_HISTORY:
                         _hex_history = _hex_history[:MAX_HISTORY]
 
-                run("_update_operators()", delayFrames=0)
+                run("mod('qrng_script')._update_operators()", delayFrames=0)
 
         except Exception as e:
             print(f"QRNG error: {e}")
@@ -82,7 +85,7 @@ def _update_operators():
 
     # Text DAT: latest value
     try:
-        op("qrng_output").text = latest_val
+        op("qrng_output_text").text = latest_val
     except Exception:
         pass
 
@@ -110,13 +113,24 @@ def _update_operators():
 # ──────────────────────────────────────────────
 def start():
     """Start the quantum stream. Call from a Button or Execute DAT."""
-    global _running, _thread
+    global _running, _thread, INTERVAL, BATCH_SIZE, API_KEY
     if _running:
         print("QRNG: already running.")
         return
+    
+    # Lire les params du composant parent au moment du start
+    try:
+        parent_op = op('/project1/QRNG_ANU')
+        API_KEY    = parent_op.par.Apikey.val
+        INTERVAL   = parent_op.par.Interval.val
+        BATCH_SIZE = int(parent_op.par.Batchsize.val)
+    except:
+        pass  # garde les valeurs par défaut si les params n'existent pas
+    
     if not API_KEY:
-        print("QRNG: ANU_API_KEY environment variable not set.")
+        print("QRNG: API key not set.")
         return
+    
     _running = True
     _thread  = threading.Thread(target=_poll_loop, daemon=True)
     _thread.start()

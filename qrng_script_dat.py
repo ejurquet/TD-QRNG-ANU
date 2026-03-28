@@ -22,7 +22,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 # ---- Configuration ----
 ENDPOINT    = "https://api.quantumnumbers.anu.edu.au"
 API_KEY     = parent().par.Apikey
-MAX_HISTORY = 100 # number of values kept in memory
+MAX_HISTORY = parent().par.Maxhistory
 INTERVAL    = parent().par.Interval
 BATCH_SIZE  = parent().par.Batchsize
 

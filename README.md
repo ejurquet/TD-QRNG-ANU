@@ -130,4 +130,4 @@ PRs welcome. Possible directions:
 - OSC output to bridge with other software
 - Multiple API source support (ID Quantique, Quantinuum)
 - Visualization components
-- Integration examples (generative art, servo control, font switching)
+- Integration examples (generative art, servo control, random draw)

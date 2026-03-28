@@ -39,8 +39,6 @@ On Windows:
 setx ANU_API_KEY "your_key_here"
 ```
 
-Never hardcode your API key in the script.
-
 **2. Import the module into TouchDesigner**
 
 Drag `QRNG_ANU.tox` into your network. The module starts streaming automatically on load.

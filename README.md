@@ -41,7 +41,7 @@ setx ANU_API_KEY "your_key_here"
 
 **2. Import the module into TouchDesigner**
 
-Drag `QRNG_ANU.tox` into your network. The module starts streaming automatically on load.
+Drag `QRNG_ANU.tox` into your network. Press the Start button in the Custom parameters panel.
 
 **3. Connect operators**
 
